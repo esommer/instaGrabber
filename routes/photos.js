@@ -16,8 +16,6 @@ exports.loadData = function(req, res, callback, appVars){
 	});
 	req.on('end', function () {
 		pageRequested = JSON.parse(body).page;
-		//username = urlParser.parse(req.url).query.toString().replace(/username=/, '');
-		//var user = users.getUser(requestor);
 		if (requestor !== undefined) {
 			user = users.getUser(requestor);
 			user.imgLinks = [];
@@ -60,10 +58,10 @@ exports.loadData = function(req, res, callback, appVars){
 					}
 				});
 			}
-		} // end if username and id match session vars
+		}
 		else {
 			res.write(JSON.stringify({'status':'error', 'data' : null}));
 			res.end();
-		} // end else (user not logged in)
-	}); // end req.on('end')
+		}
+	});
 };

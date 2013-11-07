@@ -1,4 +1,4 @@
-
+// SET VARS & REQUIRE MODULES:
 var constants = require('./private/constants');
 var express = require('express');
 var routes = require('./routes/index');
@@ -6,17 +6,17 @@ var home = require('./routes/home');
 var photos = require('./routes/photos');
 var zipper = require('./routes/zipper');
 var users = require('./lib/users');
-
 var path = require('path');
 var urlParser = require('url');
 var cons = require('consolidate');
 var port = process.env.PORT || 3000;
 var app = express();
 
+// FIRE UP THE ENGINES:
 app.listen(port,constants.address.replace(':3000',''));
 console.log('Server running on ' + constants.address + "; Process: " + process.pid);
 
-process.stdout.pause();
+// SET SOME DEFAULTS:
 app.set('port', port);
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
@@ -31,7 +31,8 @@ app.use(express.cookieSession({
 	secret: constants.cookieSecret
 }));
 app.use(app.router);
-process.stdout.resume();
+
+// ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 console.log('reset users? Y/N');
@@ -46,27 +47,51 @@ process.stdin.on('data', function(response) {
 	}
 });
 
+
+// ROUTING FTW:
 app.get('/', routes.index);
 
-app.get('/home', function (req, res, next) {
+// HANDLE STATIC FILES:
+serveStatic = function (req) {
+	var filepath = urlParser.parse(req.url).pathname;
+	res.sendfile(filepath);
+};
+
+app.get('/js/*', function (req, res, callback) {
+	serveStatic(req);
+});
+
+app.get('/css/*', function (req, res, callback) {
+	serveStatic(req);
+});
+
+app.get('/img/*', function (req, res, callback) {
+	serveStatic(req);
+});
+
+
+//HANDLE SPECIFIC LOCATIONS & ROUTES:
+app.get('/home', function (req, res, callback) {
 	home.checkUser(req, res, function (req, res, callback) {
 		home.loadData(req, res, undefined);
 	});
 });
 
-app.get('/photos', function (req, res, next) {
+app.get('/photos', function (req, res, callback) {
 	res.render('photos', {'address':constants.address});
 });
 
-app.post('/photos', function (req, res, next) {
+app.post('/photos', function (req, res, callback) {
 	photos.loadData(req, res, undefined);
 });
 
-app.post('/zipper', function (req, res, next) {
+app.post('/zipper', function (req, res, callback) {
 	zipper.zipFiles(req, res, undefined);
 });
 
-app.get('/public/temp/*', function (req, res, next) {
+
+// HANDLE DOWNLOAD REQUEST: 
+app.get('/public/temp/*', function (req, res, callback) {
 	var filepath = urlParser.parse(req.url).pathname;
 	res.download(__dirname + filepath);
 });
