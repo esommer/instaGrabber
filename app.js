@@ -1,6 +1,4 @@
-var appVars = {
-	connectedUsers : {},
-};
+
 var constants = require('./private/constants');
 var express = require('express');
 var routes = require('./routes/index');
@@ -16,13 +14,14 @@ var port = process.env.PORT || 3000;
 var app = express();
 
 app.listen(port,constants.address.replace(':3000',''));
+console.log('Server running on ' + constants.address + "; Process: " + process.pid);
 
+process.stdout.pause();
 app.set('port', port);
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.favicon());
-app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,13 +31,27 @@ app.use(express.cookieSession({
 	secret: constants.cookieSecret
 }));
 app.use(app.router);
-
-users.setup();
+process.stdout.resume();
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+console.log('reset users? Y/N');
+process.stdin.on('data', function(response) {
+	if (response === 'Y\n' || response === 'y\n') {
+		users.setup('reset');
+		process.stdin.pause();
+	}
+	else {
+		users.setup();
+		process.stdin.pause();
+	}
+});
 
 app.get('/', routes.index);
 
 app.get('/home', function (req, res, next) {
-	home.loadData(req, res, undefined);
+	home.checkUser(req, res, function (req, res, callback) {
+		home.loadData(req, res, undefined);
+	});
 });
 
 app.get('/photos', function (req, res, next) {

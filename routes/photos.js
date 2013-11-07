@@ -9,15 +9,17 @@ exports.loadData = function(req, res, callback, appVars){
 	var pageRequested = null;
 	var path = '';
 	var username = ''; 
+	var user = {};
 	var requestor = req.session.user_id;
 	req.on('data', function (chunk) {
 		body += chunk;
 	});
 	req.on('end', function () {
 		pageRequested = JSON.parse(body).page;
-		username = urlParser.parse(req.url).query.toString().replace(/username=/, '');
-		var user = users.getUser(username);
-		if (user !== undefined && user.user_id === requestor) {
+		//username = urlParser.parse(req.url).query.toString().replace(/username=/, '');
+		//var user = users.getUser(requestor);
+		if (requestor !== undefined) {
+			user = users.getUser(requestor);
 			user.imgLinks = [];
 			if (pageRequested === 0) {
 				path = '/v1/users/' + user.user_id + '/media/recent/?access_token=' + user.access_token;
@@ -37,6 +39,9 @@ exports.loadData = function(req, res, callback, appVars){
 					if (parsed.pagination !== undefined && parsed.pagination.next_url !== undefined) {
 						user.next_url = parsed.pagination.next_url.replace('https://api.instagram.com','');
 						nextStatus = 'continue';
+					} else {
+						nextStatus = 'done';
+						user.next_url = '';
 					}
 				}
 				else {
