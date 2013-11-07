@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<p>here's some shots:</p>
+<form action="/zipper" method="POST">
+	<input type="hidden" id="userfield" name="username" value="">
+	<input type="submit" value="zip it">
+	<ul id="photoList">
+	</ul>
+	
+</form>
+<script>
+	
+	window.onload = function () {
+		var photoList = document.getElementById('photoList');
+		var requestor = new XMLHttpRequest();
+		var userfield = document.getElementById('userfield');
+		var username = window.location.href.replace('http://{{address}}/photos?username=','');
+		userfield.value = username;
+		var url = window.location.href.replace('http://{{address}}','');
+		var keepRequesting = '';
+		var count = 0;
+		var state = 'halt';
+		requestor.onreadystatechange = function () {
+			if(requestor.readyState == 4 && requestor.status == 200) {
+				state = 'ready';
+				var dataReceived = JSON.parse(requestor.responseText);
+				console.log(dataReceived);
+				if (dataReceived.status === 'error') {
+					keepRequesting = 'more';
+
+					var msg = document.createElement('li');
+					msg.setAttribute('id','errMsg');
+					msg.innerHTML = 'Error connecting to Instagram. Please refresh.';
+					photoList.appendChild(msg);
+				}
+				else if (dataReceived.status === 'continue') {
+					keepRequesting = 'more';
+				}
+				else {
+					keepRequesting = 'stop';
+				}
+				if (dataReceived.data !== null) {
+					count ++;
+					var errMsg = document.getElementById('errMsg');
+					if (errMsg) {
+						console.log(errMsg);
+						errMsg.parentNode.removeChild(errMsg);
+					}
+					for (var i = 0; i < dataReceived.data.length; i++) {
+						var newLi = document.createElement('li');
+						var checkbox = document.createElement('input');
+						var newA = document.createElement('a');
+						var img = document.createElement('img');
+						newA.href = dataReceived.data[i].standard_resolution.url;
+						newA.setAttribute('download',dataReceived.data[i].standard_resolution.url);
+						checkbox.setAttribute('type','checkbox');
+						checkbox.setAttribute('name', 'fileList');
+						checkbox.setAttribute('value',dataReceived.data[i].standard_resolution.url);
+						img.src = dataReceived.data[i].thumbnail.url;
+						photoList.appendChild(newLi);
+						newLi.appendChild(checkbox);
+						newLi.appendChild(newA);
+						newA.appendChild(img);
+					}
+				}
+			}
+		}
+		requestor.open("POST", url);
+		requestor.setRequestHeader('Content-Type', 'text/json');
+		var textToSend = {'page':0};
+		requestor.send(JSON.stringify(textToSend));
+		window.onscroll = function (e) {
+			if (keepRequesting === 'more' && state === 'ready') {
+				requestor.open("POST", url);
+				requestor.setRequestHeader('Content-Type', 'text/json');
+				var textToSend = {'page':count};
+				requestor.send(JSON.stringify(textToSend));
+				state = 'halt';
+			}
+		};
+		var checked = '';
+		var toggleAll = function () {
+			var inputs = document.getElementsByTagName('input');
+			if (checked === 'all') {
+				for (var i=0; i<inputs.length; i++) {
+					if (inputs[i].getAttribute('type') === 'checkbox') {
+						inputs[i].removeAttribute('checked');
+					}
+				}
+				checked = 'none';
+			}
+			else {
+				for (var i=0; i<inputs.length; i++) {
+					if (inputs[i].getAttribute('type') === 'checkbox') {
+						inputs[i].setAttribute('checked',"checked");
+					}
+				}
+				checked = 'all';
+			}
+		}
+
+		// test for existence of photos and select all button:
+		var allSelect = document.getElementById('getall');
+		if (photoList.childNodes.length > 0 && allSelect !== undefined) {
+			allSelect = document.createElement('span');
+			allSelect.innerHTML = "Select All";
+			allSelect.addEventListener('click', toggleAll, false);
+			photoList.appendChild(allSelect);
+		}
+	};
+	
+</script>
+{% endblock %}
