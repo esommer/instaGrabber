@@ -1,16 +1,35 @@
 var urlParser = require('url');
 var querystring = require('querystring');
-var httpsPost = require('../lib/httpsLoader').httpsPost;
+var httpsLoader = require('../lib/httpsLoader');
 var constants = require('../private/constants');
 var users = require('../lib/users');
 
+getUserTotal = function (user) {
+	var path = '/v1/users/' + user.user_id + '/?access_token=' + user.access_token;
+	httpsLoader.httpsGet(path, function (parsed, err, callback) {
+		if (err) {
+			console.log('Error fetching extra user info: ' + err);
+		}
+		else {
+			if (parsed) {
+				user.media_count = parsed.data.counts.media;
+				user.full_name = parsed.data.full_name;
+				user.profile_picture = parsed.data.profile_picture;
+				user.follows = parsed.data.counts.follows;
+				user.followed_by = parsed.data.counts.followed_by;
+				users.saveUser(user);
+			}
+		}
+	});
+};
 
 exports.loadData = function(req, res, next){
   	var code = '';
+  	var user = '';
 	var username = '';
 	var userLoginURI = "https://api.instagram.com/oauth/authorize/?client_id=" + constants.client_id + "&redirect_uri=http://" + constants.address + "/home&response_type=code";
 	var userMessage = 'Please log in: ';
-	if (req.url !== undefined && urlParser.parse(req.url).query) { 
+	if (req.url !== undefined && urlParser.parse(req.url).query !== null) {
 		code = urlParser.parse(req.url).query.toString().replace(/code=/, '');
 		var sendData = {
 			'client_id' : constants.client_id,
@@ -19,25 +38,31 @@ exports.loadData = function(req, res, next){
 			'redirect_uri' : 'http://' + constants.address + '/home',
 			'code' : code
 		}
-		httpsPost('/oauth/access_token', sendData, function (parsed, err) { 
+		httpsLoader.httpsPost('/oauth/access_token', sendData, function (parsed, err) { 
 			if (err) {
-				res.render('home', {"message": err, "hrefAddress": userLoginURI});
+				console.log('Error fetching initial user data & access token from instagram: ' + err);
+				res.render('home', {"message": "Error connecting to Instagram. Please try again: ", "hrefAddress": userLoginURI});
+			}
+			else if (parsed !== undefined && parsed['user'] !== undefined) {
+				var user = {
+					'user_id' : parsed['user']['id'],
+					'username' : parsed['user']['username'],
+					'access_token' : parsed['access_token'],
+					'imgLinks' : [],
+					'next_url' : '',
+					'mediaCount' : 0,
+					'profile_picture': '',
+					'full_name' : '',
+					'follows' : 0,
+					'followed_by' : 0
+				};
+				users.saveUser(user);
+				getUserTotal(user);
+				req.session.user_id = user.user_id;
+				res.redirect('/photos');
 			}
 			else {
-				var access_token = parsed['access_token'];
-				var user_id = parsed['user']['id'];
-				username = parsed['user']['username'];
-				req.session.user_id = user_id;
-				users.saveUser({
-					'user_id' : user_id,
-					'username' : username,
-					'access_token' : access_token,
-					'imgLinks' : [],
-					'next_url' : ''
-				});
-				userLoginURI = "/photos?username=" + username;
-				userMessage = 'Thanks for logging in! Click here to see your shots:';
-				res.render('home', {"message": userMessage, "hrefAddress": userLoginURI});
+				res.redirect(constants.address + '/home', {"message": userMessage, 'hrefAddress': userLoginURI});
 			}
 		});
 	}
@@ -45,13 +70,3 @@ exports.loadData = function(req, res, next){
 		res.render('./home', {"message": userMessage, "hrefAddress": userLoginURI});
 	}
 };
-
-
-exports.checkUser = function (req, res, callback) {
-	if (req.session !== undefined && req.session.user_id !== undefined && users.getUser(req.session.user_id) !== false) {
-		res.redirect('../photos');
-	} else {
-		callback(req, res, undefined);
-	}
-};
-

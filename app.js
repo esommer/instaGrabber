@@ -21,6 +21,7 @@ app.set('port', port);
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.logger('dev'));
 app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -49,7 +50,7 @@ process.stdin.on('data', function(response) {
 
 
 // ROUTING FTW:
-app.get('/', routes.index);
+// app.get('/', routes.index);
 
 // HANDLE STATIC FILES:
 serveStatic = function (req) {
@@ -69,16 +70,20 @@ app.get('/img/*', function (req, res, callback) {
 	serveStatic(req);
 });
 
+checkUser = function (req) {
+	if (req.session !== undefined && req.session.user_id !== undefined && users.getUser(req.session.user_id) !== false) {
+		return true;
+	}
+};
 
 //HANDLE SPECIFIC LOCATIONS & ROUTES:
-app.get('/home', function (req, res, callback) {
-	home.checkUser(req, res, function (req, res, callback) {
+app.get('/*', function (req, res, callback) {
+	if (checkUser(req) === true ) {
+		res.render('photos', {'address':constants.address});
+	}
+	else {
 		home.loadData(req, res, undefined);
-	});
-});
-
-app.get('/photos', function (req, res, callback) {
-	res.render('photos', {'address':constants.address});
+	}
 });
 
 app.post('/photos', function (req, res, callback) {

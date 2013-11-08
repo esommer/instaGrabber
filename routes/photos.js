@@ -4,6 +4,12 @@ var httpsGet = require('../lib/httpsLoader').httpsGet;
 var fs = require('fs');
 var users = require('../lib/users');
 
+jsonSend = function (res, data) {
+	console.log(data);
+	res.write(JSON.stringify(data));
+	res.end();
+};
+
 exports.loadData = function(req, res, callback, appVars){
 	var body = '';
 	var pageRequested = null;
@@ -25,7 +31,7 @@ exports.loadData = function(req, res, callback, appVars){
 			else if (pageRequested > 0) {
 				path = user.next_url;
 			}
-			var getNextFeed = function (parsed,callback) {
+			var getNextFeed = function (parsed, someval, callback) {
 				nextStatus = null;
 				var toSendImgs = [];
 				if (parsed !== undefined && parsed.data !== undefined) {
@@ -46,15 +52,18 @@ exports.loadData = function(req, res, callback, appVars){
 					nextStatus = 'error';
 					toSendImgs = null;
 				}
-				res.write(JSON.stringify({'status':nextStatus, 'data' : toSendImgs}));
-				res.end();
+				someval = {'status':nextStatus, 'data' : toSendImgs};
+				callback(res, someval);
 			};
 			if (path !== '') {
 				httpsGet(path, function (parsed, err, callback) { 
 					if (err) {
 						res.render('error', {'data': 'Instagram appears to be temporarily unavailable. Please try again.'});
 					} else {
-						getNextFeed(parsed);
+						var someval = {};
+						getNextFeed(parsed, someval, function (res, someval) {
+							jsonSend(res, someval);
+						});
 					}
 				});
 			}

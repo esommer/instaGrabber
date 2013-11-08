@@ -1,14 +1,14 @@
 window.onload = function () {
 	var photoList = document.getElementById('photoList');
 	var requestor = new XMLHttpRequest();
-	//var userfield = document.getElementById('userfield');
-	// var username = window.location.href.replace('http://{{address}}/photos?username=','');
-	// userfield.value = username;
-	var url = window.location.href.replace('http://{{address}}','');
+	var loading = document.getElementById('loading');
+	var url = window.location.href.replace('http://{{address}}/photos','');
 	var keepRequesting = '';
 	var count = 0;
 	var state = 'begin';
 	var dataReceived = {};
+
+	var saveData = function () {};
 
 	requestor.onreadystatechange = function () {
 		if(requestor.readyState == 4 && requestor.status == 200) {
@@ -51,18 +51,20 @@ window.onload = function () {
 					newLi.appendChild(newA);
 					newA.appendChild(img);
 				}
-				if (dataReceived.status === 'continue' && keepRequesting === 'more') {
-					sendRequest({'page':count});
-					state = 'ready';
-				}
-				else {
-					state = 'halt';
-				}
+			}
+			if (keepRequesting === 'more') {
+				sendRequest({'page':count});
+				state = 'ready';
+			}
+			else { // everything is loaded!
+				state = 'halt';
+				loading.innerHTML = 'All photos loaded!';
 			}
 		}
 	}
 	var sendRequest = function (sendData) {
 		if (state === 'ready' || state === 'begin') {
+			console.log('sent request: ' + sendData.page);
 			requestor.open("POST", url);
 			requestor.setRequestHeader('Content-Type', 'text/json');
 			requestor.send(JSON.stringify(sendData));
