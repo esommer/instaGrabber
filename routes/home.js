@@ -11,8 +11,8 @@ getUserTotal = function (user) {
 			console.log('Error fetching extra user info: ' + err);
 		}
 		else {
-			if (parsed) {
-				user.media_count = parsed.data.counts.media;
+			if (parsed.data !== undefined) {
+				user.mediaCount = parsed.data.counts.media;
 				user.full_name = parsed.data.full_name;
 				user.profile_picture = parsed.data.profile_picture;
 				user.follows = parsed.data.counts.follows;
@@ -54,7 +54,11 @@ exports.loadData = function(req, res, next){
 					'profile_picture': '',
 					'full_name' : '',
 					'follows' : 0,
-					'followed_by' : 0
+					'followed_by' : 0,
+					'zipfile' : '',
+					'zipStage': '',
+					'zipPercent': 0,
+					'zipReqNum' : 0
 				};
 				users.saveUser(user);
 				getUserTotal(user);

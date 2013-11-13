@@ -1,11 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<p>here's some shots:</p>
-<p id="loading">Loading...</p>
-<form action="/zipper" method="POST">
-	<input type="hidden" id="userfield" name="username" value="">
-	<input type="submit" value="zip it">
+<div class="menu"></div>
+<div id="errors"></div>
+<div id="progress"></div>
+<ul id="actions">
+	<li id="selectall"><input type="checkbox" id="selectcheck" name="selectcheck"><label for="selectcheck" id="selectlabel">Select All</label></li>
+	<li id="loadingmsg"><span id="loading">Loading... </span><span id="totalMedia">0 out of 0</li>
+	<li id="zipit">zip it</li>
+</ul>
+<form id="zipform" action="/zip" method="POST">
+	<input type="submit" id="zipper" value="zip it">
 	<ul id="photoList">
 	</ul>
 </form>

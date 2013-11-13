@@ -76,27 +76,84 @@ checkUser = function (req) {
 	}
 };
 
+// HANDLE DOWNLOAD REQUEST: 
+app.get('/public/temp/*', function (req, res, callback) {
+	var filepath = urlParser.parse(req.url).pathname;
+	var filename = filepath.replace('/public/temp/', '');
+	console.log(filename);
+	// res.type('application/x-gzip');
+	// res.attachment(filename);
+	res.sendfile(__dirname + filepath, filename, function (err) {
+		if (err) {
+			console.log(err);
+		}
+	});
+});
+
 //HANDLE SPECIFIC LOCATIONS & ROUTES:
 app.get('/*', function (req, res, callback) {
 	if (checkUser(req) === true ) {
-		res.render('photos', {'address':constants.address});
+		res.render('photos');
 	}
 	else {
 		home.loadData(req, res, undefined);
 	}
 });
 
+app.post('/zip', function (req, res, callback) {
+	var requestor = req.session.user_id;
+	var user = users.getUser(requestor);
+	var body = '';
+	req.on('data', function (chunk) {
+		body += chunk;
+	});
+	req.on('end', function () {
+		try {
+			data = JSON.parse(body);
+		}
+		catch (e) {
+			console.log('error parsing zip request data: '+ e);
+		}
+		zipper.zipFiles(req, res, data, user, undefined);
+	});
+});
+
 app.post('/photos', function (req, res, callback) {
-	photos.loadData(req, res, undefined);
+	var requestor = req.session.user_id;
+	var user = users.getUser(requestor);
+	var body = '';
+	var data = '';
+	req.on('data', function (chunk) {
+		body += chunk;
+	});
+	req.on('end', function () {
+		try {
+			data = JSON.parse(body);
+		}
+		catch (e) {
+			console.log("error parsing request data: "+ e);
+		}
+		if (data !== '') {
+			switch (data.action) {
+				case ('loadPhotoLinks'):
+					console.log('headed to photos');
+					photos.loadData(req, res, data, user, undefined);
+					break;
+				case ('fetchingFiles'):
+				case ('zipping'):
+					console.log('status is fetching or zipping, sending to zipUpdate');
+					zipper.zipUpdate(req, res, data, user, undefined);
+					break;
+				default:
+					photos.loadData(req, res, data, user, undefined);
+			}
+		}
+		else {
+			console.log('received empty post from: '+user.username);
+		}
+	});
 });
 
-app.post('/zipper', function (req, res, callback) {
-	zipper.zipFiles(req, res, undefined);
-});
 
 
-// HANDLE DOWNLOAD REQUEST: 
-app.get('/public/temp/*', function (req, res, callback) {
-	var filepath = urlParser.parse(req.url).pathname;
-	res.download(__dirname + filepath);
-});
+
