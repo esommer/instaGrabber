@@ -85,7 +85,7 @@ exports.zipUpdate = function (req, res, body, user, callback) {
 };
 
 exports.zipFiles = function (req, res, data, user, callback) {
-	var files = data.data.fileList.toString().split(',');
+	var files = data.fileList.toString().split(',');
 	var newFilepath = __dirname.replace('/routes','') + '/public/temp/'+user.username+'/';
 	if (!fs.exists(newFilepath)) {
 		fs.mkdir(newFilepath,function (err) {
@@ -99,7 +99,7 @@ exports.zipFiles = function (req, res, data, user, callback) {
 	user.zipStage = 'fetchingFiles';
 	user.zipPercent = 0;
 	users.saveUser(user);
-	jsonSend(res,{'error':'','action':'fetchingFiles','number':0,'data':{}});
+	jsonSend(res,{'action':'fetchingFiles','requestNum':data.requestNum,'percent':0});
 	
 	for (var i=0; i<files.length; i++) {
 		fetchFile(files[i], user.username, function() {

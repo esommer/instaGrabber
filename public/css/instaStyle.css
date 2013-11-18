@@ -21,44 +21,45 @@ form#zipform {
 	position: relative;
 	margin-top: 100px;
 }
-ul#photoList li {
+ul#photoList li.photo {
 	display: block;
 	float: left;
 	margin: none;
 	padding: 12px;
-	padding-bottom: 50px;
+	padding-bottom: 12px;
 	position: relative;
 	z-index: 0;
 	background-color: #fff;
 	border: 1px solid #aaa;
 	border-radius: 3px;
 	margin: 6px;
+	margin-bottom: 10px;
 }
-ul#photoList li:hover {
+ul#photoList li.photo:hover {
 	border: 1px solid #444;
 }
-ul#photoList li img {
+ul#photoList li.photo img {
 	width: 200px;
 	opacity: 0.95;
 	border-radius: 6px;
 	border: 1px solid #fff;
 }
-ul#photoList li img:hover {
+ul#photoList li.photo img:hover {
 	border: 1px solid #777;
 	opacity: 1.0;
 }
 input[type=checkbox] {
-	height: 15px;
+	height: 40px;
 	position: absolute;
 	z-index: 100;
-	bottom: 4;
-	right: 10;
-	width: 40px;
-	height: 40px;
+	top: 180;
+	right: 0;
+	width: 50px;
 	border: 2px solid #000;
 	opacity: 0.8;
+	font-size: 1.3em;
 }
-div#text p {
+/*div#text p {
 	position: absolute;
 	z-index: 200;
 	top: 20;
@@ -70,7 +71,7 @@ p.left {
 	margin-bottom: 0px;
 	font-weight: 300;
 	color: #333;
-}
+}*/
 li#zipit {
 	font-size: 1.8em;
 	padding: 10px 20px 10px 20px;
@@ -110,7 +111,7 @@ ul#actions li {
 	margin-right: 30px;
 	margin-left: 30px;
 }
-li#loadingmsg {
+li#loading {
 	position: fixed;
 	left: 10;
 }
@@ -124,11 +125,57 @@ li#selectall label#selectlabel {
 	right: 280;
 	top: 40;
 }
-div#progress {
-	width: 50%;
-	height: 300px;
-	background-color: #ddd;
-	opacity: 0.8;
-	visibility: hidden;
+figure {
+	margin: 0;
+	padding: 0;
 }
-
+figure caption {
+	font-size: 0.6em;
+	text-align: left;
+	width: 200px;
+	display: block;
+	font-weight: 300;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+ul.metaData, ul.tags {
+	display: block;
+	width: 200px;
+	border: none;
+	margin: none;
+	padding: 0;
+}
+ul.metaData li, ul.tags li {
+	display: inline-block;
+	font-size: 0.6em;
+	float: right;
+	margin-right: 15px;
+	vertical-align: bottom;
+}
+li.likes {
+	font-size: 0.9em;
+}
+span.heart {
+	font-size: 1.0em;
+	color: #555;
+	vertical-align: top;
+}
+li.filter {
+	color: #CB9150;
+	font-size: 0.9em;
+	font-style: italic;
+}
+ul.tags {
+	clear: right;
+	margin-top: 10px;
+}
+ul.tags li {
+	font-size: 0.5em;
+	background-color: #DBB284;
+	border-radius: 3px;
+	border: 1px solid #aaa;
+	padding: 1px 4px;
+	color: #333;
+	margin-top: 10px;
+	margin-left: 5px;
+}

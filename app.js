@@ -135,17 +135,20 @@ app.post('/photos', function (req, res, callback) {
 		}
 		if (data !== '') {
 			switch (data.action) {
-				case ('loadPhotoLinks'):
-					console.log('headed to photos');
-					photos.loadData(req, res, data, user, undefined);
+				case ('getPhotos'):
+					photos.getPhotos(req, res, data, user, undefined);
 					break;
-				case ('fetchingFiles'):
-				case ('zipping'):
-					console.log('status is fetching or zipping, sending to zipUpdate');
-					zipper.zipUpdate(req, res, data, user, undefined);
-					break;
-				default:
-					photos.loadData(req, res, data, user, undefined);
+				// case ('loadPhotoLinks'):
+				// 	console.log('headed to photos');
+				// 	photos.loadData(req, res, data, user, undefined);
+				// 	break;
+				// case ('fetchingFiles'):
+				// case ('zipping'):
+				// 	console.log('status is fetching or zipping, sending to zipUpdate');
+				// 	zipper.zipUpdate(req, res, data, user, undefined);
+				// 	break;
+				// default:
+				// 	photos.loadData(req, res, data, user, undefined);
 			}
 		}
 		else {
