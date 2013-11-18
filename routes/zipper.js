@@ -111,7 +111,6 @@ exports.zipFiles = function (req, res, data, user, callback) {
 				console.log('BEGIN ZIP: ' + timeStart);
 				user.zipStart = Date.now();
 				user.zipStage = 'zipping';
-				user.zipPercent = 0;
 				zipDir(user.username, res, function (res) {
 					var timeTotal = Date.now() - timeStart;
 					console.log('file ready. zip time: '+timeTotal + ', avg time: '+timeTotal/269);

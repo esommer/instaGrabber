@@ -87,13 +87,15 @@ window.onload = function () {
 			}
 		},
 		zipUpdater : function (data) {
-			console.log(data);
 			if (data.link === undefined) {
 				this.notifier.emit('zip update', data.percent);
 				var that = this;
 				this.window.setTimeout(function () {
 					that.notifier.emit('get zip update', data);
 				}, 500);
+			}
+			else {
+				this.notifier.emit('zip done', data.link);
 			}
 		}
 	};
@@ -227,7 +229,24 @@ window.onload = function () {
 			return this.document.getElementById(objID);
 		},
 		updateZipBar : function (percentage) {
-			console.log('zip percentage: '+percentage);
+			var bar = this.document.getElementById('progressbar');
+			bar.className = '';
+			if (percentage > 80) {
+				var barwidth = parseInt(bar.style.width.replace('px',''));
+				var diff = percentage*4 - barwidth;
+				bar.style.width = barwidth + diff/2 + 'px';
+			}
+			else {
+				bar.style.width = percentage*4 + 'px';
+			}
+		},
+		showZipLink : function (link) {
+			var zipSpan = this.document.getElementById('downloadLink');
+			var zipLink = this.buildElement('a');
+			zipLink.innerHTML = "Download Zipped Photos!";
+			zipLink.href = link;
+			zipLink.setAttribute('download','photos.tar.gz');
+			zipSpan.appendChild(zipLink);
 		}
 	};
 
@@ -261,6 +280,7 @@ window.onload = function () {
 			this.notifier.bind('all photos loaded', this.activateButtons, this);
 			this.notifier.bind('zip update', this.dom.updateZipBar, this.dom);
 			this.notifier.bind('get zip update', this.getZipUpdate, this);
+			this.notifier.bind('zip done', this.dom.showZipLink, this.dom);
 		},
 		getZipUpdate : function (data) {
 			this.msg.send('zip', {'action':data.action, 'requestNum':data.requestNum + 1}, this.msg, function (data) {
@@ -309,8 +329,8 @@ window.onload = function () {
 			});
 		},
 		zipIt : function () {
+			this.dom.updateZipBar(0);
 			var files = this.dom.getSelectedImages();
-			console.log(files);
 			this.msg.send('zip', {'action':'startZip','requestNum':0,'fileList':files}, this.msg, function (data) {
 				this.zipUpdater(data);
 			});

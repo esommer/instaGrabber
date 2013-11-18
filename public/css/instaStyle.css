@@ -179,3 +179,24 @@ ul.tags li {
 	margin-top: 10px;
 	margin-left: 5px;
 }
+div#progress {
+	width: 400px;
+	background-color: #eee;
+	height: 40px;
+	border: 1px solid #444;
+	border-radius: 5px;
+	position: relative;
+	padding: 0;
+}
+div#progressbar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 40px;
+	width: 0px;
+	background-color: #5D8F58;
+	border-radius: 5px;
+}
+.hidden {
+	visibility: none;
+}
