@@ -104,6 +104,7 @@ app.post('/zip', function (req, res, callback) {
 	var requestor = req.session.user_id;
 	var user = users.getUser(requestor);
 	var body = '';
+	var data = '';
 	req.on('data', function (chunk) {
 		body += chunk;
 	});
@@ -114,7 +115,19 @@ app.post('/zip', function (req, res, callback) {
 		catch (e) {
 			console.log('error parsing zip request data: '+ e);
 		}
-		zipper.zipFiles(req, res, data, user, undefined);
+		if (data !== '') {
+			switch (data.action) {
+				case ('startZip'):
+					zipper.zipFiles(req, res, data, user, undefined);
+					break;
+				case ('fetchingFiles'):
+				case ('zipping'):
+					zipper.zipUpdate(req, res, data, user, undefined);
+					break;
+				default:
+					break;
+			}
+		}
 	});
 });
 

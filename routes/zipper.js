@@ -73,14 +73,11 @@ var zipDir = function (username, res, callback) {
 
 exports.zipUpdate = function (req, res, body, user, callback) {
 	if (user.zipfile !== '' && user.zipStage === 'done') {
-		jsonSend(res, {'error':'','action':'doneZip','number':100,'data':{'link':user.zipfile}});
+		jsonSend(res, {'action':'doneZip', 'requestNum':body.requestNum, 'percent':100, 'link':user.zipfile});
 	}
-	// else if (user.zipStage === 'zipping') {
-	// 	user.zipPercent = 50 + (Date.now() - user.zipStart)/user.
-	// }
 	else {
 		users.saveUser(user);
-		jsonSend(res, {'error':'','action':user.zipStage,'number':user.zipPercent,'data':{}});
+		jsonSend(res, {'action':user.zipStage, 'percent':user.zipPercent, 'requestNum':body.requestNum});
 	}
 };
 
@@ -96,6 +93,7 @@ exports.zipFiles = function (req, res, data, user, callback) {
 	}
 	var fileCount = files.length;
 	var counter = 0;
+	user.zipSize = fileCount;
 	user.zipStage = 'fetchingFiles';
 	user.zipPercent = 0;
 	users.saveUser(user);
@@ -104,7 +102,7 @@ exports.zipFiles = function (req, res, data, user, callback) {
 	for (var i=0; i<files.length; i++) {
 		fetchFile(files[i], user.username, function() {
 			counter++;
-			user.zipPercent = Math.round(counter/fileCount*100/2);
+			user.zipPercent = Math.round(counter/user.zipSize*100);
 			users.saveUser(user);
 			console.log('file downloaded: '+counter);
 			console.log('user updated, zipPercent: '+ user.zipPercent);

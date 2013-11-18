@@ -58,7 +58,8 @@ exports.loadData = function(req, res, next){
 					'zipfile' : '',
 					'zipStage': '',
 					'zipPercent': 0,
-					'zipReqNum' : 0
+					'zipReqNum' : 0,
+					'zipSize' : 0
 				};
 				users.saveUser(user);
 				getUserTotal(user);

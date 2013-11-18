@@ -22,13 +22,10 @@ window.onload = function () {
 		bind : function (event, fxn, scope) {
 			this.handlers[event] = this.handlers[event] || [];
 			this.handlers[event].push({'fxn':fxn, 'scope': scope});
-			console.log(this.handlers);
 		},
 		emit : function (event, data) {
-			console.log(arguments);
 			dev(event + ' emitted');
 			if (this.handlers[event] !== []) {
-				console.log(this);
 				for (var i = 0; i < this.handlers[event].length; i++) {
 					this.handlers[event][i]['fxn'].call(this.handlers[event][i]['scope'], data);
 				}
@@ -91,6 +88,13 @@ window.onload = function () {
 		},
 		zipUpdater : function (data) {
 			console.log(data);
+			if (data.link === undefined) {
+				this.notifier.emit('zip update', data.percent);
+				var that = this;
+				this.window.setTimeout(function () {
+					that.notifier.emit('get zip update', data);
+				}, 500);
+			}
 		}
 	};
 
@@ -221,6 +225,9 @@ window.onload = function () {
 		// },
 		fetchDOMObject : function (objID) {
 			return this.document.getElementById(objID);
+		},
+		updateZipBar : function (percentage) {
+			console.log('zip percentage: '+percentage);
 		}
 	};
 
@@ -252,17 +259,22 @@ window.onload = function () {
 			this.notifier.bind('get more photos', this.getMorePhotos, this);
 			this.notifier.bind('all photos loaded', this.dom.updateLoading, this.dom);
 			this.notifier.bind('all photos loaded', this.activateButtons, this);
+			this.notifier.bind('zip update', this.dom.updateZipBar, this.dom);
+			this.notifier.bind('get zip update', this.getZipUpdate, this);
+		},
+		getZipUpdate : function (data) {
+			this.msg.send('zip', {'action':data.action, 'requestNum':data.requestNum + 1}, this.msg, function (data) {
+				this.zipUpdater(data);
+			});
 		},
 		savePhotos: function (photos) {
 			var storageArr = [];
 			var inStorage = this.localStorage.photos === undefined? '':this.localStorage.photos.replace(/^undefined/, '');
 			try {
 				storageArr = JSON.parse(inStorage);
-				console.log(storageArr);
 			}
 			catch (e) {
 				if (e) console.log('instorage failed to parse');
-				console.log(inStorage);
 			}
 			photos.forEach(function (photo) {
 				storageArr.push(photo);
@@ -297,8 +309,8 @@ window.onload = function () {
 			});
 		},
 		zipIt : function () {
-			console.log(this);
 			var files = this.dom.getSelectedImages();
+			console.log(files);
 			this.msg.send('zip', {'action':'startZip','requestNum':0,'fileList':files}, this.msg, function (data) {
 				this.zipUpdater(data);
 			});
