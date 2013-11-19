@@ -97,7 +97,7 @@ app.get('/public/temp/*', function (req, res, callback) {
 });
 
 //HANDLE SPECIFIC LOCATIONS & ROUTES:
-app.get('/*', function (req, res, callback) {
+app.get('/photos', function (req, res, callback) {
 	if (checkUser(req) === true ) {
 		res.render('photos');
 	}
