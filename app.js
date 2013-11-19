@@ -34,19 +34,19 @@ app.use(express.cookieSession({
 app.use(app.router);
 
 // ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
-process.stdin.resume();
-process.stdin.setEncoding('utf8');
-console.log('reset users? Y/N');
-process.stdin.on('data', function(response) {
-	if (response === 'Y\n' || response === 'y\n') {
+// process.stdin.resume();
+// process.stdin.setEncoding('utf8');
+// console.log('reset users? Y/N');
+// process.stdin.on('data', function(response) {
+// 	if (response === 'Y\n' || response === 'y\n') {
 		users.setup('reset');
-		process.stdin.pause();
-	}
-	else {
-		users.setup();
-		process.stdin.pause();
-	}
-});
+// 		process.stdin.pause();
+// 	}
+// 	else {
+// 		users.setup();
+// 		process.stdin.pause();
+// 	}
+// });
 
 
 // ROUTING FTW:
