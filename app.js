@@ -25,7 +25,7 @@ app.use(express.logger('dev'));
 app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + '/public'));
 app.use(express.cookieParser());
 app.use(express.cookieSession({
 	cookieName: process.env.COOKIE_NAME,
@@ -94,6 +94,16 @@ app.get('/public/temp/*', function (req, res, callback) {
 			console.log(err);
 		}
 	});
+});
+
+//HANDLE SPECIFIC LOCATIONS & ROUTES:
+app.get('/home', function (req, res, callback) {
+	if (checkUser(req) === true ) {
+		res.render('photos');
+	}
+	else {
+		home.loadData(req, res, undefined);
+	}
 });
 
 //HANDLE SPECIFIC LOCATIONS & ROUTES:
