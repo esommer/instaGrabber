@@ -12,7 +12,7 @@ jsonSend = function (res, data) {
 var fetchFile = function (fileAddress, username, callback) {
 	http.get(fileAddress, function (response){
 		var addressParts = fileAddress.split('/');
-	    var localFileAddress = '../public/temp/'+username+'/'+addressParts.pop();
+	    var localFileAddress = './public/temp/'+username+'/'+addressParts.pop();
 	    var toFile = fs.createWriteStream(localFileAddress, {'flags':'a'});
 		response.on('data', function(chunk){
 	        toFile.write(chunk,encoding='binary');
@@ -29,13 +29,13 @@ var fetchFile = function (fileAddress, username, callback) {
 };
 
 var zipDir = function (username, res, callback) {
-	var compress = new targz().compress('../public/temp/'+username+'/', './public/temp/'+username+'.tar.gz', function (err) {
+	var compress = new targz().compress('./public/temp/'+username+'/', './public/temp/'+username+'.tar.gz', function (err) {
 		if (err) {
 			console.log(err);
 		}
 		else {
 			callback(res);
-			var dirname = '../public/temp/'+username+'/'
+			var dirname = './public/temp/'+username+'/'
 			var count = 0;
 			var rmdirectory = function () {
 				fs.rmdir(dirname, function (err) {
