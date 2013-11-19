@@ -1,4 +1,5 @@
 .DS_STORE
+private/users.json
 *.sublime-project
 *.sublime-workspace
 public/temp/
