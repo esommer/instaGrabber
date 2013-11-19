@@ -1,0 +1,13 @@
+TO DOs:
+• Clean up client side code some more 
+• Progress Bar
+• Database integration (POSTGRES)
+• Up on Heroku
+• Dropbox
+• HTTPS
+• Subscription to Instagram
+• Handle access tokens expiring
+• User Login to our site (passwords)
+• Cleanup script
+• Separate code more
+• Filter by tag

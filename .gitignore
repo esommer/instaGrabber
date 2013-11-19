@@ -1,5 +1,4 @@
 .DS_STORE
-private/
 *.sublime-project
 *.sublime-workspace
 public/temp/
