@@ -50,7 +50,7 @@ if (process.env.DEV_MODE === 'dev') {
 	});
 }
 else {
-	users.setup();
+	users.setup('reset');
 }
 
 
