@@ -9,11 +9,11 @@ var users = require('./lib/users');
 var path = require('path');
 var urlParser = require('url');
 var cons = require('consolidate');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 5000;
 var app = express();
 
 // FIRE UP THE ENGINES:
-app.listen(port,constants.address.replace(':3000',''));
+app.listen(port,constants.address.replace(':5000',''));
 console.log('Server running on ' + constants.address + "; Process: " + process.pid);
 
 // SET SOME DEFAULTS:
