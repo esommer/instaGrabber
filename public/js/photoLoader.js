@@ -229,8 +229,9 @@ window.onload = function () {
 			return this.document.getElementById(objID);
 		},
 		updateZipBar : function (percentage) {
+			var box = this.document.getElementById('progress');
+			box.className = '';
 			var bar = this.document.getElementById('progressbar');
-			bar.className = '';
 			if (percentage > 80) {
 				var barwidth = parseInt(bar.style.width.replace('px',''));
 				var diff = percentage*4 - barwidth;
@@ -241,12 +242,14 @@ window.onload = function () {
 			}
 		},
 		showZipLink : function (link) {
-			var zipSpan = this.document.getElementById('downloadLink');
+			var bar = this.document.getElementById('progressbar');
+			bar.style.width = '400px';
+			var zipDiv = this.document.getElementById('downloadLink');
 			var zipLink = this.buildElement('a');
 			zipLink.innerHTML = "Download Zipped Photos!";
 			zipLink.href = link;
 			zipLink.setAttribute('download','photos.tar.gz');
-			zipSpan.appendChild(zipLink);
+			zipDiv.appendChild(zipLink);
 		}
 	};
 
