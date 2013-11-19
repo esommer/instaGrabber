@@ -1,7 +1,7 @@
 // SET VARS & REQUIRE MODULES:
 
 var express = require('express');
-var routes = require('./routes/index');
+var routes = require('./routes');
 var home = require('./routes/home');
 var photos = require('./routes/photos');
 var zipper = require('./routes/zipper');
@@ -18,9 +18,10 @@ console.log('Server running on ' + process.env.ADDRESS + process.env.PORT + "; P
 
 // SET SOME DEFAULTS:
 app.set('port', port);
+app.set('views', path.join(__dirname, 'views'));
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
-app.set('views', path.join(__dirname, 'views'));
+
 app.use(express.logger('dev'));
 app.use(express.favicon());
 app.use(express.bodyParser());
