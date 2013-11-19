@@ -22,7 +22,7 @@ app.engine('html', cons.swig);
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.logger('dev'));
-// app.use(express.favicon());
+app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,7 +50,7 @@ if (process.env.DEV_MODE === 'dev') {
 	});
 }
 else {
-	users.setup();
+	users.setup('reset');
 }
 
 
@@ -75,9 +75,9 @@ app.get('/imgs/*', function (req, res, callback) {
 	serveStatic(req);
 });
 
-app.get('/favicon.ico', function (req, res, callback) {
-	serveStatic('./public/imgs/favicon.ico');
-});
+// app.get('/favicon.ico', function (req, res, callback) {
+// 	serveStatic('./public/imgs/favicon.ico');
+// });
 
 checkUser = function (req) {
 	if (req.session !== undefined && req.session.user_id !== undefined && users.getUser(req.session.user_id) !== false) {
