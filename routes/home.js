@@ -26,7 +26,7 @@ exports.loadData = function(req, res, next){
   	var code = '';
   	var user = '';
 	var username = '';
-	var userLoginURI = "https://api.instagram.com/oauth/authorize/?client_id=" + process.env.CLIENT_ID + "&redirect_uri=http://" + process.env.ADDRESS + process.env.PORT + "/home&response_type=code";
+	var userLoginURI = "https://api.instagram.com/oauth/authorize/?client_id=" + process.env.CLIENT_ID + "&redirect_uri=http://" + process.env.ADDRESS + ":" + process.env.PORT + "/home&response_type=code";
 	var userMessage = 'Please log in: ';
 	if (req.url !== undefined && urlParser.parse(req.url).query !== null) {
 		code = urlParser.parse(req.url).query.toString().replace(/code=/, '');
@@ -34,7 +34,7 @@ exports.loadData = function(req, res, next){
 			'client_id' : process.env.CLIENT_ID,
 			'client_secret' : process.env.CLIENT_SECRET,
 			'grant_type' : 'authorization_code',
-			'redirect_uri' : 'http://' + process.env.ADDRESS + process.env.PORT + '/home',
+			'redirect_uri' : 'http://' + process.env.ADDRESS + ":" + process.env.PORT + '/home',
 			'code' : code
 		}
 		httpsLoader.httpsPost('/oauth/access_token', sendData, function (parsed, err) { 
@@ -66,7 +66,7 @@ exports.loadData = function(req, res, next){
 				res.redirect('/photos');
 			}
 			else {
-				res.redirect(process.env.ADDRESS + process.env.PORT + '/home', {"message": userMessage, 'hrefAddress': userLoginURI});
+				res.redirect(process.env.ADDRESS  + ":" + process.env.PORT + '/home', {"message": userMessage, 'hrefAddress': userLoginURI});
 			}
 		});
 	}

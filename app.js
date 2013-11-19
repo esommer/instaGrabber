@@ -25,13 +25,13 @@ app.use(express.logger('dev'));
 app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.static(__dirname + '/public'));
 app.use(express.cookieParser());
 app.use(express.cookieSession({
 	cookieName: process.env.COOKIE_NAME,
 	secret: process.env.COOKIE_SECRET
 }));
 app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
 
 //IF DEV MODE, ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
 if (process.env.DEV_MODE === 'dev') {
@@ -107,7 +107,7 @@ app.get('/home', function (req, res, callback) {
 });
 
 //HANDLE SPECIFIC LOCATIONS & ROUTES:
-app.get('/home', function (req, res, callback) {
+app.get('/photos', function (req, res, callback) {
 	if (checkUser(req) === true ) {
 		res.render('photos');
 	}
