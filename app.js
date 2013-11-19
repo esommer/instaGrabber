@@ -33,7 +33,7 @@ app.use(express.cookieSession({
 }));
 app.use(app.router);
 
-IF DEV MODE, ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
+//IF DEV MODE, ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
 if (process.env.DEV_MODE === true) {
 	process.stdin.resume();
 	process.stdin.setEncoding('utf8');
