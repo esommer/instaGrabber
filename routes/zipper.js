@@ -83,7 +83,7 @@ exports.zipUpdate = function (req, res, body, user, callback) {
 
 exports.zipFiles = function (req, res, data, user, callback) {
 	var files = data.fileList.toString().split(',');
-	var newFilepath = './public/'+user.username+'/';
+	var newFilepath = './public/temp/'+user.username+'/';
 	if (!fs.exists(newFilepath)) {
 		fs.mkdir(newFilepath,function (err) {
 			if(err) {
