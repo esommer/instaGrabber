@@ -14,7 +14,7 @@ var app = express();
 
 // FIRE UP THE ENGINES:
 app.listen(port, process.env.ADDRESS);
-console.log('Server running on ' + process.env.ADDRESS_PORT + "; Process: " + process.pid);
+console.log('Server running on ' + process.env.ADDRESS + process.env.PORT + "; Process: " + process.pid);
 
 // SET SOME DEFAULTS:
 app.set('port', port);
