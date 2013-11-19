@@ -1,5 +1,5 @@
 // SET VARS & REQUIRE MODULES:
-var constants = require('./private/constants');
+
 var express = require('express');
 var routes = require('./routes/index');
 var home = require('./routes/home');
@@ -13,8 +13,8 @@ var port = process.env.PORT || 5000;
 var app = express();
 
 // FIRE UP THE ENGINES:
-app.listen(port,constants.address.replace(':5000',''));
-console.log('Server running on ' + constants.address + "; Process: " + process.pid);
+app.listen(port, process.env.ADDRESS);
+console.log('Server running on ' + process.env.ADDRESS_PORT + "; Process: " + process.pid);
 
 // SET SOME DEFAULTS:
 app.set('port', port);
@@ -28,25 +28,30 @@ app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.cookieParser());
 app.use(express.cookieSession({
-	cookieName: constants.cookieName,
-	secret: constants.cookieSecret
+	cookieName: process.env.COOKIE_NAME,
+	secret: process.env.COOKIE_SECRET
 }));
 app.use(app.router);
 
-// ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
-// process.stdin.resume();
-// process.stdin.setEncoding('utf8');
-// console.log('reset users? Y/N');
-// process.stdin.on('data', function(response) {
-// 	if (response === 'Y\n' || response === 'y\n') {
-		users.setup('reset');
-// 		process.stdin.pause();
-// 	}
-// 	else {
-// 		users.setup();
-// 		process.stdin.pause();
-// 	}
-// });
+IF DEV MODE, ON APP START, PROMPT TERMINAL USER FOR RESETTING USER FILE:
+if (process.env.DEV_MODE === true) {
+	process.stdin.resume();
+	process.stdin.setEncoding('utf8');
+	console.log('reset users? Y/N');
+	process.stdin.on('data', function(response) {
+		if (response === 'Y\n' || response === 'y\n') {
+			users.setup('reset');
+			process.stdin.pause();
+		}
+		else {
+			users.setup();
+			process.stdin.pause();
+		}
+	});
+}
+else {
+	users.setup();
+}
 
 
 // ROUTING FTW:

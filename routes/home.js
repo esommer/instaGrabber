@@ -1,7 +1,6 @@
 var urlParser = require('url');
 var querystring = require('querystring');
 var httpsLoader = require('../lib/httpsLoader');
-var constants = require('../private/constants');
 var users = require('../lib/users');
 
 getUserTotal = function (user) {
@@ -27,15 +26,15 @@ exports.loadData = function(req, res, next){
   	var code = '';
   	var user = '';
 	var username = '';
-	var userLoginURI = "https://api.instagram.com/oauth/authorize/?client_id=" + constants.client_id + "&redirect_uri=http://" + constants.address + "/home&response_type=code";
+	var userLoginURI = "https://api.instagram.com/oauth/authorize/?client_id=" + process.env.CLIENT_ID + "&redirect_uri=http://" + process.env.ADDRESS_PORT + "/home&response_type=code";
 	var userMessage = 'Please log in: ';
 	if (req.url !== undefined && urlParser.parse(req.url).query !== null) {
 		code = urlParser.parse(req.url).query.toString().replace(/code=/, '');
 		var sendData = {
-			'client_id' : constants.client_id,
-			'client_secret' : constants.client_secret,
+			'client_id' : process.env.CLIENT_ID,
+			'client_secret' : process.env.CLIENT_SECRET,
 			'grant_type' : 'authorization_code',
-			'redirect_uri' : 'http://' + constants.address + '/home',
+			'redirect_uri' : 'http://' + process.env.ADDRESS_PORT + '/home',
 			'code' : code
 		}
 		httpsLoader.httpsPost('/oauth/access_token', sendData, function (parsed, err) { 
@@ -67,7 +66,7 @@ exports.loadData = function(req, res, next){
 				res.redirect('/photos');
 			}
 			else {
-				res.redirect(constants.address + '/home', {"message": userMessage, 'hrefAddress': userLoginURI});
+				res.redirect(process.env.ADDRESS_PORT + '/home', {"message": userMessage, 'hrefAddress': userLoginURI});
 			}
 		});
 	}
