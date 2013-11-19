@@ -58,21 +58,21 @@ else {
 // app.get('/', routes.index);
 
 // HANDLE STATIC FILES:
-serveStatic = function (req) {
+serveStatic = function (req, res) {
 	var filepath = urlParser.parse(req.url).pathname;
 	res.sendfile(filepath);
 };
 
 app.get('/js/*', function (req, res, callback) {
-	serveStatic(req);
+	serveStatic(req, res);
 });
 
 app.get('/css/*', function (req, res, callback) {
-	serveStatic(req);
+	serveStatic(req, res);
 });
 
 app.get('/imgs/*', function (req, res, callback) {
-	serveStatic(req);
+	serveStatic(req, res);
 });
 
 // app.get('/favicon.ico', function (req, res, callback) {
