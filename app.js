@@ -59,7 +59,7 @@ else {
 
 // HANDLE STATIC FILES:
 serveStatic = function (req, res) {
-	var filepath = urlParser.parse(req.url).pathname;
+	var filepath = './public' + urlParser.parse(req.url).pathname;
 	res.sendfile(filepath);
 };
 
