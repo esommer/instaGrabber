@@ -80,9 +80,6 @@ checkUser = function (req) {
 app.get('/public/temp/*', function (req, res, callback) {
 	var filepath = urlParser.parse(req.url).pathname;
 	var filename = filepath.replace('/public/temp/', '');
-	console.log(filename);
-	// res.type('application/x-gzip');
-	// res.attachment(filename);
 	res.sendfile(__dirname + filepath, filename, function (err) {
 		if (err) {
 			console.log(err);
@@ -151,17 +148,6 @@ app.post('/photos', function (req, res, callback) {
 				case ('getPhotos'):
 					photos.getPhotos(req, res, data, user, undefined);
 					break;
-				// case ('loadPhotoLinks'):
-				// 	console.log('headed to photos');
-				// 	photos.loadData(req, res, data, user, undefined);
-				// 	break;
-				// case ('fetchingFiles'):
-				// case ('zipping'):
-				// 	console.log('status is fetching or zipping, sending to zipUpdate');
-				// 	zipper.zipUpdate(req, res, data, user, undefined);
-				// 	break;
-				// default:
-				// 	photos.loadData(req, res, data, user, undefined);
 			}
 		}
 		else {

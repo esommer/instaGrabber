@@ -5,8 +5,6 @@ var fs = require('fs');
 var users = require('../lib/users');
 
 jsonRespond = function (res, data) {
-	console.log('sending data:');
-	console.log(data);
 	res.write(JSON.stringify(data));
 	res.end();
 };
@@ -129,19 +127,13 @@ exports.loadData = function(req, res, data, user, callback){
 		sendData.data = {};
 		sendData.data.totalMedia = user.mediaCount;
 	}
-	// if (user.mediaCount === user.imgLinks.length && pageRequested === 0) {
-	// 	// we know this user and have their data ready! 
-	// 	jsonSend(res, {'error':'','action':'donePhotos','number':pageRequested,'data':{'totalMedia':user.mediaCount,'images':user.imgLinks}});
-	// }
-	//else {
-		httpsGet(path, function (parsed, err) { 
-			if (err) {
-				jsonSend(res, {'error':'Instagram appears to be temporarily unavailable. Please try again.', 'action':'loadPhotoLinks','number':data.number,'data':{}});
-			} else {
-				handleReceivedData(parsed, user, sendData, res, function (res, sendData) {
-					blargjsonSend(res, sendData);
-				});
-			}
-		});
-	//}
+	httpsGet(path, function (parsed, err) { 
+		if (err) {
+			jsonSend(res, {'error':'Instagram appears to be temporarily unavailable. Please try again.', 'action':'loadPhotoLinks','number':data.number,'data':{}});
+		} else {
+			handleReceivedData(parsed, user, sendData, res, function (res, sendData) {
+				blargjsonSend(res, sendData);
+			});
+		}
+	});
 };

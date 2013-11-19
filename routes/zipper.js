@@ -108,12 +108,10 @@ exports.zipFiles = function (req, res, data, user, callback) {
 			console.log('user updated, zipPercent: '+ user.zipPercent);
 			if(counter === fileCount) {
 				var timeStart = Date.now();
-				console.log('BEGIN ZIP: ' + timeStart);
 				user.zipStart = Date.now();
 				user.zipStage = 'zipping';
 				zipDir(user.username, res, function (res) {
 					var timeTotal = Date.now() - timeStart;
-					console.log('file ready. zip time: '+timeTotal + ', avg time: '+timeTotal/269);
 					user.zipfile = '../public/temp/' + user.username + '.tar.gz';
 					user.zipStage = 'done';
 					users.saveUser(user);
