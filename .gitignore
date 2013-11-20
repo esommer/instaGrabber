@@ -4,3 +4,4 @@ private/users.json
 *.sublime-project
 *.sublime-workspace
 private/app_envs.txt
+private/temp/*
