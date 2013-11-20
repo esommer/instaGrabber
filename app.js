@@ -14,16 +14,16 @@ var app = express();
 
 // FIRE UP THE ENGINES:
 app.listen(port);
-console.log('Server running on ' + process.env.ADDRESS + process.env.PORT + "; Process: " + process.pid);
+console.log('Server running on ' + process.env.ADDRESS + "; Process: " + process.pid);
 
 // SET SOME DEFAULTS:
+app.use(express.favicon(path.join(__dirname, './public/imgs/favicon.ico'), { maxAge: 2592000000 }));
 app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
 
 app.use(express.logger('dev'));
-app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());

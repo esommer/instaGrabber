@@ -201,17 +201,36 @@ window.onload = function () {
 			if (selected === false) {
 				for (var i=0; i<inputs.length; i++) {
 					if (inputs[i].getAttribute('type') === 'checkbox') {
-						inputs[i].removeAttribute('checked');
+						// inputs[i].removeAttribute('checked');
+						// inputs[i].removeAttribute('selected');
+						// inputs[i].style.setProperty('checked',false);
+						inputs[i].checked = false;
 					}
 				}
 			}
 			else {
 				for (var i=0; i<inputs.length; i++) {
 					if (inputs[i].getAttribute('type') === 'checkbox') {
-						inputs[i].setAttribute('checked',"checked");
+						// inputs[i].setAttribute('checked',"checked");
+						// inputs[i].setAttribute('selected',true);
+						// inputs[i].style.setProperty('checked',true);
+						inputs[i].checked = true;
 					}
 				}
 			}
+		},
+		onCheckbox : function () {
+			// var box = this;
+			// if (this.checked !== false) {
+			// 	// this.setAttribute('checked','checked');
+			// 	// this.setAttribute('selected',true);
+			// 	this.checked = true;
+			// }
+			// else {
+			// 	// this.setAttribute('checked',false);
+			// 	// this.setAttribute('selected',false);
+			// 	this.checked = false;
+			// }
 		},
 		getSelectedImages : function () {
 			var files = [];
@@ -272,6 +291,10 @@ window.onload = function () {
 			selectcheck.addEventListener('click', this.dom.toggleAll, false);
 			var zipper = this.dom.fetchDOMObject('zipit');
 			zipper.addEventListener('click', this.zipIt.bind(this), false);
+			var checkboxes = this.dom.document.getElementsByTagName('input');
+			for (var i=0;i<checkboxes.length;i++) {
+				checkboxes[i].addEventListener('click', this.dom.onCheckbox, false);
+			}
 			// this.resizeImgs();
 		},
 		bindEvents : function () {
