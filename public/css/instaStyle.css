@@ -3,7 +3,7 @@ body {
 	font-size: 1.5em;
 	margin: none;
 	padding: 0;
-	background-color: #ddd;
+	background-color: #bbb;
 	position: relative;
 	padding-top: 60px;
 }
@@ -33,7 +33,7 @@ ul#photoList li.photo {
 	border: 1px solid #aaa;
 	border-radius: 3px;
 	margin: 6px;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 ul#photoList li.photo:hover {
 	border: 1px solid #444;
@@ -61,30 +61,16 @@ input[type=checkbox] {
 	-webkit-transform: scale(2); /* Safari and Chrome */
 	-o-transform: scale(2); /* Opera */
 }
-
-/*div#text p {
-	position: absolute;
-	z-index: 200;
-	top: 20;
-	right: 50;
-}
-p.left {
-	text-align: right;
-	margin-top: 10px;
-	margin-bottom: 0px;
-	font-weight: 300;
-	color: #333;
-}*/
 li#zipit {
-	font-size: 1.8em;
-	padding: 10px 20px 10px 20px;
+	font-size: 1.5em;
+	padding: 5px 20px 5px 20px;
 	background-color: #5D8F58;
 	color: #333;
 	border-radius: 10px;
 	border: 1px solid #555;
 	position: fixed;
 	right: 30;
-	top: 15;
+	top: 10;
 	margin: 0;
 	cursor: pointer;
 }
@@ -97,13 +83,11 @@ div.menu {
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: 100px;
-	/*background-color: #eee;
-	opacity: 0.7;*/
-	background-image: -webkit-linear-gradient(top,rgba(238,238,238,0.7),rgba(238,238,238,0));
-	background-image: -moz-linear-gradient(top,rgba(238,238,238,0.7),rgba(238,238,238,0));
-	background-image: -ms-linear-gradient(top,rgba(238,238,238,0.7),rgba(238,238,238,0));
-	background-image: -o-linear-gradient(top,rgba(238,238,238,0.7),rgba(238,238,238,0));
+	height: 80px;
+	background-image: -webkit-linear-gradient(top,rgba(232,232,232,0.8),rgba(232,232,232,0));
+	background-image: -moz-linear-gradient(top,rgba(221,221,221,0.7),rgba(221,221,221,0));
+	background-image: -ms-linear-gradient(top,rgba(221,221,221,0.7),rgba(221,221,221,0));
+	background-image: -o-linear-gradient(top,rgba(221,221,221,0.7),rgba(221,221,221,0));
 	top: 0;
 	left: 0;
 }
@@ -125,15 +109,13 @@ li#loading {
 li#selectall input[type=checkbox]{
 	position: fixed;
 	right: 240;
-	top: 30;
+	top: 20;
+	margin-top: 12px;
 }
 li#selectall label#selectlabel {
 	position: fixed;
 	right: 280;
-	top: 40;
-}
-#selectcheck {
-	margin-top: 12px;
+	top: 27;
 }
 figure {
 	margin: 0;
@@ -220,4 +202,11 @@ div#downloadLink {
 div#downloadLink a {
 	color: #333;
 	font-weight: bold;
+}
+#showall {
+	color: #333399;
+	margin-top: 30px;
+	margin-left: 30px;
+	cursor: pointer;
+	display: none;
 }

@@ -1,0 +1,18 @@
+structural notes:
+
+<li>
+	<figure>
+		<a href="$$$$">
+			<img src="$$$$">
+		</a>
+		<checkbox>
+		<figcaption>$$$$</figcaption>
+	</figure>
+	<ul class="metaData">
+		<li class="likes">$$$$</li>
+		<li class="filter">$$$$</li>
+	</p>
+	<ul class="tags">
+		<li>$$$$</li>
+	</ul>
+</li>

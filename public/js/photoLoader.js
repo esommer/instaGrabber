@@ -103,6 +103,8 @@ window.onload = function () {
 
 
 
+
+
 	
 
 	// DOCUMENT OBJECT MODEL MANIPULATION:
@@ -200,37 +202,20 @@ window.onload = function () {
 			var selected = document.getElementById('selectcheck').checked;
 			if (selected === false) {
 				for (var i=0; i<inputs.length; i++) {
-					if (inputs[i].getAttribute('type') === 'checkbox') {
-						// inputs[i].removeAttribute('checked');
-						// inputs[i].removeAttribute('selected');
-						// inputs[i].style.setProperty('checked',false);
+					if (inputs[i].getAttribute('type') === 'checkbox' && inputs[i].parentNode.parentNode.style.display !== 'none') {
+						console.log(inputs[i].style.display);
 						inputs[i].checked = false;
 					}
 				}
 			}
 			else {
 				for (var i=0; i<inputs.length; i++) {
-					if (inputs[i].getAttribute('type') === 'checkbox') {
-						// inputs[i].setAttribute('checked',"checked");
-						// inputs[i].setAttribute('selected',true);
-						// inputs[i].style.setProperty('checked',true);
+					if (inputs[i].getAttribute('type') === 'checkbox' && inputs[i].parentNode.parentNode.style.display !== 'none') {
+						console.log(inputs[i].style.display);
 						inputs[i].checked = true;
 					}
 				}
 			}
-		},
-		onCheckbox : function () {
-			// var box = this;
-			// if (this.checked !== false) {
-			// 	// this.setAttribute('checked','checked');
-			// 	// this.setAttribute('selected',true);
-			// 	this.checked = true;
-			// }
-			// else {
-			// 	// this.setAttribute('checked',false);
-			// 	// this.setAttribute('selected',false);
-			// 	this.checked = false;
-			// }
 		},
 		getSelectedImages : function () {
 			var files = [];
@@ -269,10 +254,76 @@ window.onload = function () {
 			zipLink.href = link;
 			zipLink.setAttribute('download','photos.tar.gz');
 			zipDiv.appendChild(zipLink);
+		},
+		showOnly : function () {
+			var value = this.innerHTML;
+			var parentClass = this.parentNode.className;
+			var photoUL = this.parentNode.parentNode.parentNode;
+			var allImgs = photoUL.childNodes;
+			var imgArr = [];
+			for (var m=1;m<allImgs.length;m++) {
+				imgArr.push(allImgs[m]);
+			}
+			var show = [];
+			for (var i=1;i<allImgs.length;i++) {
+				var testUl = parentClass === 'metaData'? allImgs[i].childNodes[1]: allImgs[i].childNodes[2];
+				if (testUl !== undefined) {
+					var kids = testUl.childNodes;
+					if (parentClass === 'metaData') {
+						var filterText = kids[0].className === 'filter'?  kids[0].innerHTML : kids[1].innerHTML;
+						if (filterText === value) {
+							show.push(allImgs[i]);
+						}
+					}
+					else {
+						var vals = [];
+						for (var k=0;k < kids.length;k++) {
+							vals.push(kids[k].innerHTML);
+						}
+						if (vals.indexOf(value) !== -1) {
+							show.push(allImgs[i]);
+						}
+					}
+				}
+			}
+			var hideArr = imgArr.filter(function (imgLi) {
+				if (show.indexOf(imgLi) === -1) {
+					imgLi.style.display = 'none';
+					return imgLi;
+				}
+			});
+			var showall = photoUL.parentNode.childNodes[3];
+			showall.style.display = 'block';
+		},
+		fixImgLIDisplay : function () {
+			var allLIs = this.document.getElementsByTagName('li');
+			var imgLIs = [];
+			var maxHeight = 0;
+			for (var i=0;i<allLIs.length;i++) {
+				if (allLIs[i].className === 'photo') {
+					imgLIs.push(allLIs[i]);
+					if (allLIs[i].clientHeight > maxHeight) {
+						maxHeight = allLIs[i].clientHeight;
+					}
+				}
+			}
+			imgLIs.forEach(function (li) {
+				if (li.clientHeight < maxHeight) {
+					var diff = maxHeight - li.clientHeight;
+					var marg = li.style["margin-bottom"];
+					li.style["margin-bottom"] = diff + marg;
+				}
+			});	
+		},
+		showAllImgs : function () {
+			var imgs = this.parentNode.childNodes[5].childNodes;
+			for (var i=1;i<imgs.length;i++) {
+				imgs[i].style.display = 'block';
+			}
+			this.style.display = 'none';
 		}
 	};
 
-	
 
 
 
@@ -287,23 +338,38 @@ window.onload = function () {
 	Controller.prototype = {
 		activateButtons : function () {
 			// all photos are loaded, now you may
+			this.dom.fixImgLIDisplay();
 			var selectcheck = this.dom.fetchDOMObject('selectcheck');
 			selectcheck.addEventListener('click', this.dom.toggleAll, false);
 			var zipper = this.dom.fetchDOMObject('zipit');
 			zipper.addEventListener('click', this.zipIt.bind(this), false);
-			var checkboxes = this.dom.document.getElementsByTagName('input');
-			for (var i=0;i<checkboxes.length;i++) {
-				checkboxes[i].addEventListener('click', this.dom.onCheckbox, false);
-			}
+			this.addSortingListeners();
+			var showall = this.dom.fetchDOMObject('showall');
+			showall.addEventListener('click', this.dom.showAllImgs, false);
 			// this.resizeImgs();
 		},
+		addSortingListeners : function () {
+			var LIs = this.dom.document.getElementsByTagName('li');
+			var activeLIs = [];
+			for (var i=0;i<LIs.length;i++) {
+				if (LIs[i].parentNode.className === 'metaData' || LIs[i].parentNode.className === 'tags') {
+					activeLIs.push(LIs[i]);
+				}
+			}
+			activeLIs.forEach(function (li) {
+				li.addEventListener('click', this.dom.showOnly, false);
+			}, this);
+		},
 		bindEvents : function () {
+			// loading events:
 			this.notifier.bind('photo chunk', this.dom.displayPhotos, this.dom);
 			this.notifier.bind('photo chunk', this.savePhotos, this);
 			this.notifier.bind('update loading', this.dom.updateLoading, this.dom);
 			this.notifier.bind('get more photos', this.getMorePhotos, this);
+			// ready events:
 			this.notifier.bind('all photos loaded', this.dom.updateLoading, this.dom);
 			this.notifier.bind('all photos loaded', this.activateButtons, this);
+			// zipping events:
 			this.notifier.bind('zip update', this.dom.updateZipBar, this.dom);
 			this.notifier.bind('get zip update', this.getZipUpdate, this);
 			this.notifier.bind('zip done', this.dom.showZipLink, this.dom);
