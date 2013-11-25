@@ -86,7 +86,7 @@ checkUser = function (req) {
 	}
 };
 
-// HANDLE DOWNLOAD REQUEST: 
+// HANDLE DOWNLOAD REQUEST:
 app.get('/public/temp/*', function (req, res, callback) {
 	var filepath = urlParser.parse(req.url).pathname;
 	var filename = filepath.replace('/public/temp/', '');
@@ -95,6 +95,15 @@ app.get('/public/temp/*', function (req, res, callback) {
 			console.log(err);
 		}
 	});
+});
+
+app.get('/', function (req, res, callback) {
+	if (checkUser(req) === true ) {
+		res.render('photos');
+	}
+	else {
+		home.loadData(req, res, undefined);
+	}
 });
 
 //HANDLE SPECIFIC LOCATIONS & ROUTES:

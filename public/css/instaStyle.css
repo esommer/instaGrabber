@@ -61,6 +61,13 @@ input[type=checkbox] {
 	-webkit-transform: scale(2); /* Safari and Chrome */
 	-o-transform: scale(2); /* Opera */
 }
+li#instructions {
+	font-size: .6em;
+	color: #666;
+	position: fixed;
+	top: 60;
+	left: 30;
+}
 li#zipit {
 	font-size: 1.5em;
 	padding: 5px 20px 5px 20px;

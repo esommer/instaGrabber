@@ -63,7 +63,7 @@ window.onload = function () {
 					if (data !== {}) callback.call(cbScope, data);
 					else errlog('no response text received from server');
 				}
-			};	
+			};
 		},
 		photoLoader : function (data) {
 			var photoArr = [];
@@ -105,7 +105,7 @@ window.onload = function () {
 
 
 
-	
+
 
 	// DOCUMENT OBJECT MODEL MANIPULATION:
 	var DOM = function (window, document) {
@@ -159,7 +159,7 @@ window.onload = function () {
 				domElems['taglist'] = [];
 				for (var i = 0; i < photo.tags.length; i++) {
 					var newLI = this.buildElement('li');
-					newLI.innerHTML = '#' + photo.tags[i];	
+					newLI.innerHTML = '#' + photo.tags[i];
 					domElems.taglist.push(newLI);
 				}
 			}
@@ -183,7 +183,7 @@ window.onload = function () {
 				}
 			}
 		},
-		displayPhotos : function (photos) {			
+		displayPhotos : function (photos) {
 			photos.forEach(function (photo) {
 				this.attachElemsToDom( this.addPhotoData( photo, this.makeEmptyDOMElems() ) );
 			}, this);
@@ -313,7 +313,7 @@ window.onload = function () {
 					var marg = li.style["margin-bottom"];
 					li.style["margin-bottom"] = diff + marg;
 				}
-			});	
+			});
 		},
 		showAllImgs : function () {
 			var imgs = this.parentNode.childNodes[5].childNodes;
@@ -327,7 +327,7 @@ window.onload = function () {
 
 
 
-	
+
 	// RUNTIME FUNCTIONS:
 	var Controller = function (notifier, dom, msg, localStorage) {
 		this.notifier = notifier;
@@ -396,24 +396,24 @@ window.onload = function () {
 		getFirstPhotos : function () {
 			var loaded = false;
 			var photos = [];
-			if (this.localStorage.photos !== undefined) {
-				try {
-					photos = JSON.parse(this.localStorage.photos);
-					loaded = true;
-				}
-				catch (e) {
-					if (e) console.log('localStorage failed to parse');
-				}
-			}
-			if (loaded === true) {
-				this.dom.displayPhotos(photos);
-				this.notifier.emit('all photos loaded',{'totalMedia':photos.length});
-			}
-			else if (loaded === false) {
+			// if (this.localStorage.photos !== undefined) {
+			// 	try {
+			// 		photos = JSON.parse(this.localStorage.photos);
+			// 		loaded = true;
+			// 	}
+			// 	catch (e) {
+			// 		if (e) console.log('localStorage failed to parse');
+			// 	}
+			// }
+			// if (loaded === true) {
+			// 	this.dom.displayPhotos(photos);
+			// 	this.notifier.emit('all photos loaded',{'totalMedia':photos.length});
+			// }
+			// else if (loaded === false) {
 				this.msg.send('photos', {'action':'getPhotos','requestNum':0}, this.msg, function (data) {
 					this.photoLoader(data);
 				});
-			}
+			//}
 		},
 		getMorePhotos : function (req) {
 			this.msg.send('photos', req, this.msg, function (data) {
@@ -429,7 +429,7 @@ window.onload = function () {
 		}
 	};
 
-	
+
 	var start = function (window, document, localStorage) {
 		var notifier = new EventEmitter;
 		var missionControl = new Controller (notifier, new DOM(window, document), new Messenger(window, notifier), localStorage);
