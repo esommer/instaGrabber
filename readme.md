@@ -1,9 +1,9 @@
-instaget
+Instaget
 ========
 
-instaget seeks to solve the problem of obtaining one's own Instagram photos. Once a user has allowed instaget to access his or her Instagram account, instaget displays all the user's photos and allows the user to sort by photo filter or tag. Then the user can select some (or all) photos and download the selected photos as a single zip file.
+Instaget seeks to solve the problem of obtaining one's own Instagram photos. Once a user has allowed instaget to access his or her Instagram account, instaget displays all the user's photos and allows the user to sort by photo filter or tag. Then the user can select some (or all) photos and download the selected photos as a single zip file.
 
-See it in action [here](http://instaget.herokuapp.com).
+####See it in action [here](http://instaget.herokuapp.com).
 
 About the code
 --------------
@@ -30,3 +30,6 @@ Future To-Dos:
 - Database backend for saving users and access tokens
 - Create modal for displaying individual photos when clicked
 - Styling improvements (I did not use Bootstrap -- just a little vanilla CSS)
+
+###License
+? Do what you will.
