@@ -1,5 +1,4 @@
 // SET VARS & REQUIRE MODULES:
-
 var express = require('express');
 var routes = require('./routes');
 var home = require('./routes/home');
@@ -22,7 +21,6 @@ app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', cons.swig);
 app.set('view engine', 'html');
-
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
@@ -72,24 +70,28 @@ app.get('/public/temp/*', function (req, res, callback) {
 	});
 });
 
-var legalGetRoutes = ['/','/home','/photos'];
-
-app.get('/*', function (req, res, callback) {
-	if (legalGetRoutes[req.url] !== undefined) {
-		if (checkUser(req) === true ) {
-			res.render('photos');
-		}
-		else {
-			home.loadData(req, res, undefined);
-		}
+// GET REQUESTS:
+directGetReq = function (req, res, callback) {
+	if (checkUser(req) === true ) {
+		res.render('photos');
 	}
 	else {
-		res.writeHead(404, {'Content-Type' : 'text-plain'});
-		res.end('<html><head><title>Error</title><style>body { color: #555; font-family: Helvetica, sans-serif; font-size: 4em; font-weight: 300; text-align: center; margin-top: 100px; }</style></head><body>:( File not found. Apologies!</body></html>');
+		home.loadData(req, res, undefined);
 	}
+};
+
+app.get('/', function (req, res, callback) {
+	directGetReq(req, res, callback);
+});
+app.get('/home', function (req, res, callback) {
+	directGetReq(req, res, callback);
+});
+app.get('/photos', function (req, res, callback) {
+	directGetReq(req, res, callback);
 });
 
-app.post('/zip', function (req, res, callback) {
+// POST REQUESTS:
+preparePost = function (req, res, callback) {
 	var requestor = req.session.user_id;
 	var user = users.getUser(requestor);
 	var body = '';
@@ -106,6 +108,9 @@ app.post('/zip', function (req, res, callback) {
 		}
 		if (data !== '') {
 			switch (data.action) {
+				case ('getPhotos'):
+					photos.getPhotos(req, res, data, user, undefined);
+					break;
 				case ('startZip'):
 					zipper.zipFiles(req, res, data, user, undefined);
 					break;
@@ -118,36 +123,12 @@ app.post('/zip', function (req, res, callback) {
 			}
 		}
 	});
+};
+
+app.post('/zip', function (req, res, callback) {
+	preparePost(req, res, callback);
 });
 
 app.post('/photos', function (req, res, callback) {
-	var requestor = req.session.user_id;
-	var user = users.getUser(requestor);
-	var body = '';
-	var data = '';
-	req.on('data', function (chunk) {
-		body += chunk;
-	});
-	req.on('end', function () {
-		try {
-			data = JSON.parse(body);
-		}
-		catch (e) {
-			console.log("error parsing request data: "+ e);
-		}
-		if (data !== '') {
-			switch (data.action) {
-				case ('getPhotos'):
-					photos.getPhotos(req, res, data, user, undefined);
-					break;
-			}
-		}
-		else {
-			console.log('received empty post from: '+user.username);
-		}
-	});
+	preparePost(req, res, callback);
 });
-
-
-
-
