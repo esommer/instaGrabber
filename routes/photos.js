@@ -11,10 +11,10 @@ jsonRespond = function (res, data) {
 
 
 
-blargjsonSend = function (res, data) {
-	res.write(JSON.stringify(data));
-	res.end();
-};
+// blargjsonSend = function (res, data) {
+// 	res.write(JSON.stringify(data));
+// 	res.end();
+// };
 
 updateUserData = function (user, updateObject) {
 	// if (user.imgLinks.length === 0) {
@@ -28,6 +28,7 @@ updateUserData = function (user, updateObject) {
 }
 
 handleReceivedData = function (parsed, user, sendData, res, callback) {
+	console.log('i have been called');
 	sendData = {};
 	sendData.data = {};
 	var error = '';
@@ -93,7 +94,7 @@ cleanPhotoData = function (parsed, callback) {
 
 exports.getPhotos = function (req, res, data, user, callback) {
 	var path = data.requestNum === 0 ? '/v1/users/' + user.user_id + '/media/recent/?access_token=' + user.access_token : user.next_url;
-	httpsGet(path, function (parsed, err) { 
+	httpsGet(path, function (parsed, err) {
 		if (err) {
 			jsonRespond(res, {'error':'Instagram appears to be temporarily unavailable. Please try again.', 'requestNum':data.requestNum});
 		} else {
@@ -119,21 +120,21 @@ exports.getPhotos = function (req, res, data, user, callback) {
 	});
 };
 
-exports.loadData = function(req, res, data, user, callback){
-	var pageRequested = data.number;
-	var path = pageRequested === 0 ? '/v1/users/' + user.user_id + '/media/recent/?access_token=' + user.access_token : user.next_url;
-	var sendData = {};
-	if (pageRequested === 0) {
-		sendData.data = {};
-		sendData.data.totalMedia = user.mediaCount;
-	}
-	httpsGet(path, function (parsed, err) { 
-		if (err) {
-			jsonSend(res, {'error':'Instagram appears to be temporarily unavailable. Please try again.', 'action':'loadPhotoLinks','number':data.number,'data':{}});
-		} else {
-			handleReceivedData(parsed, user, sendData, res, function (res, sendData) {
-				blargjsonSend(res, sendData);
-			});
-		}
-	});
-};
+// exports.loadData = function(req, res, data, user, callback){
+// 	var pageRequested = data.number;
+// 	var path = pageRequested === 0 ? '/v1/users/' + user.user_id + '/media/recent/?access_token=' + user.access_token : user.next_url;
+// 	var sendData = {};
+// 	if (pageRequested === 0) {
+// 		sendData.data = {};
+// 		sendData.data.totalMedia = user.mediaCount;
+// 	}
+// 	httpsGet(path, function (parsed, err) {
+// 		if (err) {
+// 			jsonSend(res, {'error':'Instagram appears to be temporarily unavailable. Please try again.', 'action':'loadPhotoLinks','number':data.number,'data':{}});
+// 		} else {
+// 			handleReceivedData(parsed, user, sendData, res, function (res, sendData) {
+// 				blargjsonSend(res, sendData);
+// 			});
+// 		}
+// 	});
+// };

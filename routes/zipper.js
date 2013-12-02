@@ -42,9 +42,6 @@ var zipDir = function (username, res, callback) {
 					if (err) {
 						console.log("Error deleting user directory: "+dirname+ " "+err);
 					}
-					else {
-						console.log('removed directory!');
-					}
 				});
 			}
 			fs.readdir(dirname, function (err, files) {
@@ -59,9 +56,7 @@ var zipDir = function (username, res, callback) {
 							}
 						});
 						count++;
-						console.log('removed file, count: '+ count);
 						if(count === files.length) {
-							console.log('should remove directory now');
 							rmdirectory();
 						}
 					}
@@ -82,8 +77,6 @@ exports.zipUpdate = function (req, res, body, user, callback) {
 };
 
 exports.zipFiles = function (req, res, data, user, callback) {
-	console.log('zipFiles begun: ');
-	console.log(data);
 	var files = data.fileList.toString().split(',');
 	var newFilepath = './public/temp/'+user.username+'/';
 	if (!fs.exists(newFilepath)) {
@@ -106,8 +99,6 @@ exports.zipFiles = function (req, res, data, user, callback) {
 			counter++;
 			user.zipPercent = Math.round(counter/user.zipSize*100);
 			users.saveUser(user);
-			console.log('file downloaded: '+counter);
-			console.log('user updated, zipPercent: '+ user.zipPercent);
 			if(counter === fileCount) {
 				var timeStart = Date.now();
 				user.zipStart = Date.now();
