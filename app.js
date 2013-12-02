@@ -84,8 +84,8 @@ app.get('/*', function (req, res, callback) {
 		}
 	}
 	else {
-		response.writeHead(404, {'Content-Type' : 'text-plain'});
-		response.end('<html><head><title>Error</title><style>body { color: #555; font-family: Helvetica, sans-serif; font-size: 4em; font-weight: 300; text-align: center; margin-top: 100px; }</style></head><body>:( File not found. Apologies!</body></html>');
+		res.writeHead(404, {'Content-Type' : 'text-plain'});
+		res.end('<html><head><title>Error</title><style>body { color: #555; font-family: Helvetica, sans-serif; font-size: 4em; font-weight: 300; text-align: center; margin-top: 100px; }</style></head><body>:( File not found. Apologies!</body></html>');
 	}
 });
 
