@@ -24,7 +24,7 @@ window.onload = function () {
 			this.handlers[event].push({'fxn':fxn, 'scope': scope});
 		},
 		emit : function (event, data) {
-			dev(event + ' emitted');
+			//dev(event + ' emitted');
 			if (this.handlers[event] !== []) {
 				for (var i = 0; i < this.handlers[event].length; i++) {
 					this.handlers[event][i]['fxn'].call(this.handlers[event][i]['scope'], data);
@@ -50,7 +50,6 @@ window.onload = function () {
 	Messenger.prototype = {
 		send : function (to, dataObj, cbScope, callback) {
 			console.log('req sent to '+ to);
-			console.log('data: ');
 			console.log(dataObj);
 			var url = this.window.location.href.replace(this.window.location.href.replace(/^http:\/\/[\w]*\//, ''), '') + '/' + to;
 			var requestObj = new XMLHttpRequest();
@@ -89,6 +88,7 @@ window.onload = function () {
 			}
 		},
 		zipUpdater : function (data) {
+			console.log(data);
 			if (data.link === undefined) {
 				this.notifier.emit('zip update', data.percent);
 				var that = this;

@@ -66,7 +66,7 @@ var zipDir = function (username, res, callback) {
 						}
 					}
 				}
-			});			
+			});
 		}
 	});
 };
@@ -82,6 +82,8 @@ exports.zipUpdate = function (req, res, body, user, callback) {
 };
 
 exports.zipFiles = function (req, res, data, user, callback) {
+	console.log('zipFiles begun: ');
+	console.log(data);
 	var files = data.fileList.toString().split(',');
 	var newFilepath = './public/temp/'+user.username+'/';
 	if (!fs.exists(newFilepath)) {
@@ -98,7 +100,7 @@ exports.zipFiles = function (req, res, data, user, callback) {
 	user.zipPercent = 0;
 	users.saveUser(user);
 	jsonSend(res,{'action':'fetchingFiles','requestNum':data.requestNum,'percent':0});
-	
+
 	for (var i=0; i<files.length; i++) {
 		fetchFile(files[i], user.username, function() {
 			counter++;
@@ -117,6 +119,6 @@ exports.zipFiles = function (req, res, data, user, callback) {
 					users.saveUser(user);
 				});
 			}
-		});		
+		});
 	}
-};	
+};
