@@ -400,24 +400,24 @@ window.onload = function () {
 		getFirstPhotos : function () {
 			var loaded = false;
 			var photos = [];
-			if (this.localStorage.photos !== undefined) {
-				try {
-					photos = JSON.parse(this.localStorage.photos);
-					loaded = true;
-				}
-				catch (e) {
-					if (e) console.log('localStorage failed to parse');
-				}
-			}
-			if (loaded === true) {
-				this.dom.displayPhotos(photos);
-				this.notifier.emit('all photos loaded',{'totalMedia':photos.length});
-			}
-			else if (loaded === false) {
+			// if (this.localStorage.photos !== undefined) {
+			// 	try {
+			// 		photos = JSON.parse(this.localStorage.photos);
+			// 		loaded = true;
+			// 	}
+			// 	catch (e) {
+			// 		if (e) console.log('localStorage failed to parse');
+			// 	}
+			// }
+			// if (loaded === true) {
+			// 	this.dom.displayPhotos(photos);
+			// 	this.notifier.emit('all photos loaded',{'totalMedia':photos.length});
+			// }
+			// else if (loaded === false) {
 				this.msg.send('photos', {'action':'getPhotos','requestNum':0}, this.msg, function (data) {
 					this.photoLoader(data);
 				});
-			}
+			// }
 		},
 		getMorePhotos : function (req) {
 			this.msg.send('photos', req, this.msg, function (data) {
