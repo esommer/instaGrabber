@@ -207,8 +207,6 @@ window.onload = function () {
 					files.push(fileObjs[i].value);
 				}
 			}
-			console.log('grabbed selected imgs: ');
-			console.log(files);
 			return files;
 		},
 		// resizeImgs : function () {

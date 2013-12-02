@@ -72,32 +72,20 @@ app.get('/public/temp/*', function (req, res, callback) {
 	});
 });
 
-app.get('/', function (req, res, callback) {
-	if (checkUser(req) === true ) {
-		res.render('photos');
-	}
-	else {
-		home.loadData(req, res, undefined);
-	}
-});
+var legalGetRoutes = ['/','/home','/photos'];
 
-//HANDLE SPECIFIC LOCATIONS & ROUTES:
-app.get('/home', function (req, res, callback) {
-	if (checkUser(req) === true ) {
-		res.render('photos');
+app.get('/*', function (req, res, callback) {
+	if (legalGetRoutes[req.url] !== undefined) {
+		if (checkUser(req) === true ) {
+			res.render('photos');
+		}
+		else {
+			home.loadData(req, res, undefined);
+		}
 	}
 	else {
-		home.loadData(req, res, undefined);
-	}
-});
-
-//HANDLE SPECIFIC LOCATIONS & ROUTES:
-app.get('/photos', function (req, res, callback) {
-	if (checkUser(req) === true ) {
-		res.render('photos');
-	}
-	else {
-		home.loadData(req, res, undefined);
+		response.writeHead(404, {'Content-Type' : 'text-plain'});
+		response.end('<html><head><title>Error</title><style>body { color: #555; font-family: Helvetica, sans-serif; font-size: 4em; font-weight: 300; text-align: center; margin-top: 100px; }</style></head><body>:( File not found. Apologies!</body></html>');
 	}
 });
 
